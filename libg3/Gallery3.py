@@ -41,7 +41,7 @@ class Gallery3(object):
     This is the main utility class that should be instantiated and used for all
     calls
     """
-    def __init__(self , host , apiKey , g3Base='/gallery3' , port=80 , 
+    def __init__(self , host , apiKey , g3Base='/gallery3' , port=None , 
             ssl=False):
         """
         Initializes and sets up the gallery 3 object
@@ -55,7 +55,7 @@ class Gallery3(object):
         """
         self.host = host
         self.apiKey = apiKey
-        self.port = int(port)
+        self.port = port        
         self.ssl = ssl
         self.g3Base = g3Base.strip('/')
         self.protocol = ('http' , 'https')[ssl]
@@ -410,7 +410,10 @@ class Gallery3(object):
             self._opener.add_handler(urllib2.HTTPSHandler())
 
     def _buildUrl(self , resource , kwargs={}):
-        url = '%s://%s:%d/%s/%s' % (self.protocol , self.host , self.port , 
+        port_str = ''
+        if self.port:
+            port_str = ":%d" % self.port
+        url = '%s://%s%s/%s/%s' % (self.protocol , self.host , port_str , 
             quote(self.g3Base) , quote(resource))
         if kwargs:
             url += '?%s' % urlencode(kwargs)
